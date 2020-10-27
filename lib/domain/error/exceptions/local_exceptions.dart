@@ -1,4 +1,4 @@
-class LocalExceptions implements Exception {}
+abstract class LocalExceptions implements Exception {}
 
 class LocalEmptyException extends LocalExceptions{}
 

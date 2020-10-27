@@ -1,7 +1,7 @@
 import 'package:acaziasampleapp/data/response/country_response.dart';
 import 'package:acaziasampleapp/data/response/summary_response.dart';
 import 'package:acaziasampleapp/data/services/remote_service.dart';
-import 'package:acaziasampleapp/domain/error/local_exceptions.dart';
+import 'package:acaziasampleapp/domain/error/exceptions/local_exceptions.dart';
 import 'package:injectable/injectable.dart';
 
 mixin RemoteDataSource {
@@ -22,7 +22,7 @@ class AppRemoteDataSource implements RemoteDataSource {
   Future<CountryResponse> getCountryData(String countryId) async {
     try {
       return CountryResponse.fromJson(
-          await _mockRemote.getCountryData(countryId));
+          await _remote.getCountryData(countryId));
     } on Exception catch (_) {
       throw GenericException();
     }
@@ -31,7 +31,7 @@ class AppRemoteDataSource implements RemoteDataSource {
   @override
   Future<SummaryResponse> getSummaryData() async {
     try {
-      return SummaryResponse.fromJson(await _mockRemote.getSummaryData());
+      return SummaryResponse.fromJson(await _remote.getSummaryData());
     } on Exception catch (_) {
       throw GenericException();
     }

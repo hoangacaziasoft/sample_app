@@ -1,4 +1,4 @@
-class ConnectionExceptions implements Exception {}
+abstract class ConnectionExceptions implements Exception {}
 
 class TimeoutException extends ConnectionExceptions {
   TimeoutException() : super();

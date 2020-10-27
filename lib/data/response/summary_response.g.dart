@@ -11,12 +11,16 @@ SummaryResponse _$SummaryResponseFromJson(Map<String, dynamic> json) {
     Global: json['Global'] == null
         ? null
         : GlobalResponse.fromJson(json['Global'] as Map<String, dynamic>),
-    Countries: json['Countries'] as List,
+    Countries: (json['Countries'] as List)
+        ?.map((e) => e == null
+            ? null
+            : CountryResponse.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
   );
 }
 
 Map<String, dynamic> _$SummaryResponseToJson(SummaryResponse instance) =>
     <String, dynamic>{
-      'Global': instance.Global,
-      'Countries': instance.Countries,
+      'Global': instance.Global.toJson(),
+      'Countries': instance.Countries.map((e) => e.toJson()).toList(),
     };

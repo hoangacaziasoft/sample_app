@@ -11,8 +11,8 @@ class AppRemoteService implements RemoteService {
 
   @override
   Future getCountryData(String countryId) async =>
-      await httpManager.get(url: '/country/$countryId');
+      await httpManager.get(url: 'country/$countryId');
 
   @override
-  Future getSummaryData() => httpManager.get(url: '/summary');
+  Future getSummaryData() => httpManager.get(url: 'summary');
 }

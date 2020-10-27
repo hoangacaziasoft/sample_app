@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:acaziasampleapp/core/urls.dart';
-import 'package:acaziasampleapp/domain/error/connection_exceptions.dart';
+import 'package:acaziasampleapp/domain/error/exceptions/connection_exceptions.dart';
 import 'package:http/http.dart' as http;
 import 'package:injectable/injectable.dart';
 
@@ -99,6 +99,7 @@ class AppHttpManager implements HttpManager {
 
   String _queryBuilder(String path, Map<String, dynamic> query) {
     final buffer = StringBuffer()..write(AppURL.serverURL + path);
+    print('Api: '+buffer.toString());
     if (query != null) {
       if (query.isNotEmpty) {
         buffer.write('?');

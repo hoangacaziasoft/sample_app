@@ -2,10 +2,12 @@ import 'package:acaziasampleapp/core/network_info.dart';
 import 'package:acaziasampleapp/data/data_source/local/local_datasource.dart';
 import 'package:acaziasampleapp/data/data_source/remote/remote_datasource.dart';
 import 'package:acaziasampleapp/data/mapper/remote_mappers.dart';
-import 'package:acaziasampleapp/domain/error/local_exceptions.dart';
+import 'package:acaziasampleapp/domain/error/exceptions/local_exceptions.dart';
+import 'package:acaziasampleapp/domain/error/failures/failures.dart';
 import 'package:acaziasampleapp/domain/models/country.dart';
 import 'package:acaziasampleapp/domain/models/summary.dart';
 import 'package:acaziasampleapp/domain/repositories/app_repository.dart';
+import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
 @Singleton(as: Repository)
@@ -20,23 +22,44 @@ class AppRepository implements Repository {
       this.countryMapper, this.summaryMapper);
 
   @override
-  Future<Country> getCountry(String idCountry) async {
+  Future<Either<Failure, Country>> getCountry(String idCountry) async {
+    var response;
+
     try {
       if (await networkInfo.hasConnect()) {
-        final response = await remoteDataSource.getCountryData(idCountry);
+        response = await remoteDataSource.getCountryData(idCountry);
         await localDataSource.saveCountryData(response);
-        return countryMapper.mapTo(response);
       } else {
-
+        response = await localDataSource.getCountryData();
       }
-    } on GenericException catch (_) {}
+      return Right(countryMapper.mapTo(response));
+    } on GenericException {
+      return Left(GenericFailure());
+    } on LocalEmptyException {
+      return Left(LocalEmptyFailure());
+    } catch (e) {
+      throw e;
+    }
   }
 
   @override
-  Future<Summary> getSummary() async {
+  Future<Either<Failure, Summary>> getSummary() async {
+    var response;
+
     try {
       if (await networkInfo.hasConnect()) {
-      } else {}
-    } on GenericException catch (_) {}
+        response = await remoteDataSource.getSummaryData();
+        await localDataSource.saveSummary(response);
+      } else {
+        response = await localDataSource.getSummary();
+      }
+      return Right(summaryMapper.mapTo(response));
+    } on GenericException {
+      return Left(GenericFailure());
+    } on LocalEmptyException {
+      return Left(LocalEmptyFailure());
+    } catch (e) {
+      throw e;
+    }
   }
 }
